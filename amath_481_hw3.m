@@ -1,3 +1,4 @@
+%% HW3 Part 1
 clc; clear all; close all;
 
 
@@ -45,15 +46,42 @@ x = xspan(1:Nx); y = yspan(1:Ny);
 w_norm = .01;
 
 w0 = exp((-X.^2 - (Y - 6).^2)./25) - w_norm;
-
 A(1,:) = 0; A(1,1) = 1;
-
 %tol = 1e-6 ; options = odeset('RelTol',tol,'AbsTol',tol);
-[t, wsol] = ode45('rhs', tspan, w0, [], N, v, A, B, C);
+w0 = reshape(w0, N, 1);
+[L, U] = lu(A);
+tic
+[t, wsol] = ode45('rhs', tspan , w0, [], N, v, A, L, U, B, C);
+toc
 
+%% HW 3 Part 3
+clc; clear all; close all;
 
+v = .01;
+tspan = 0:0.5:20;
+Lx = 10; Ly = 12; n = 64;
+x_non_P = linspace(-Lx/2, Lx/2, n+1);
+x = x_non_P(1:n);
+y_non_P = linspace(-Ly/2, Ly/2, n+1);
+y = y_non_P(1:n);
+[X, Y] = meshgrid(x, y);
 
+kx = (2*pi/Lx) * [0:n/2-1 -0:n/2-1];
+kx(1) = 10^(-7);
+ky = (2*pi/Ly) * [0:n/2-1 -0:n/2-1];
+ky(1) = 10^(-7);
 
+[X, Y] = meshgrid(x,y);
+[KX, KY] = meshgrid(kx, ky);
+w_norm = .01;
+w0 = exp((-X.^2 - (Y - 6).^2)./25) - w_norm;
 
+KXY2D = KX.^2 + KY.^2;
+KXY_col = reshape(KXY2D, n^2, 1);
+
+w0_ft = fft2(w0);
+w0_ft_col = reshape(w0_ft, n^2, 1);
+
+[t, wsol] = ode45('rhs_ft', tspan , w0_ft_col, [], n, KXY_col,KXY2D, KX, KY, v);
 
 
