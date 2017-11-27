@@ -12,7 +12,7 @@ wy = ifft2(i*KY.*w0_ft);
 
 poisson = reshape(psix .* wy - psiy .* wx, n^2, 1);
 
-lapl_w = reshape(ifft2(v*(- KXY2D .* w0_ft)), n^2, 1);
+lapl_w = v*(- KXY_col .* w0_ft_col);
 
 dw = lapl_w - poisson;
 
