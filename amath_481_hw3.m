@@ -90,10 +90,8 @@ A = two_d_lap_gen(10, 12, Nx, Ny);
 v = 10^(-3);
 tspan = 0:0.5:20;
 Lx = 10; Ly = 12; n = 64;
-x_non_P = linspace(-Lx/2, Lx/2, n+1);
-x = x_non_P(1:n);
-y_non_P = linspace(-Ly/2, Ly/2, n+1);
-y = y_non_P(1:n);
+x = xspan(1:n);
+y = yspan(1:n);
 [X, Y] = meshgrid(x, y);
 
 kx = (2*pi/Lx) * [0:n/2-1 (-n/2):-1];
