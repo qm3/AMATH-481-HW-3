@@ -1,20 +1,10 @@
-function dw = rhs_ft(t, w0_ft_col, dummy, n, KXY_col,KXY2D, KX, KY, v)
+function dw = rhs_ft(t, w0_col, dummy, n, KXY2D, v, A, B, C)
 
-w0_ft = reshape(w0_ft_col, n, n);
+w0_ft = fft2(reshape(w0_col, n, n));
 
-psi = -w0_ft./KXY2D;
+psi = reshape(real(ifft2(-w0_ft./KXY2D)), n^2, 1);
 
-psix = ifft2(i*KX.*psi);
-psiy = ifft2(i*KY.*psi);
-
-wx = ifft2(i*KX.*w0_ft);
-wy = ifft2(i*KY.*w0_ft);
-
-poisson = reshape(psix .* wy - psiy .* wx, n^2, 1);
-
-lapl_w = v*(- KXY_col .* w0_ft_col);
-
-dw = lapl_w - poisson;
+dw = v * A * w0_col + (C * psi) .* (B * w0_col) - (B * psi) .* (C * w0_col);
 
 end
 
