@@ -63,6 +63,7 @@ for n = 1:length(t)
  
 end
 
+hold on
 %% HW 3 Part 3
 clc; clear all; close all;
 
