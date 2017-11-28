@@ -15,7 +15,12 @@ C_setup = full(spdiags([adds subtr], [1 -1], 8, 8));
 C_setup(1, ny) = -1/(2*deltay); C_setup(end, end - (ny-1)) = 1/(2*deltay);
 
 C = kron(A, C_setup);
-test_A = full(two_d_lap_gen(10, 12, 4, 8));
+
+A1 = B;
+A2 = C;
+save A1.dat A1 -ascii
+save A2.dat A2 -ascii
+
 %% HW 3 part 2
 clc; clear all; close all;
 
@@ -50,20 +55,24 @@ w_mean = sum(w0)/length(w0);
 w0 = w0 - w_mean;
 A_pin = A;
 A_pin(1,:) = 0; A_pin(1,1) = 1;
-tol = 1e-6 ; options = odeset('RelTol',tol,'AbsTol',tol);
+tol = 10^(-6) ; options = odeset('RelTol',tol,'AbsTol',tol);
 [L, U] = lu(A_pin);
-tic
+
 [t, wsol] = ode45('rhs', tspan , w0, options, N, v, A, L, U, B, C);
-toc
+w_final = reshape(wsol(end,:)', Nx, Ny);
 
-for n = 1:length(t)
-    w_plot = reshape(wsol(n,:), Nx, Ny); % reshaping back to the right size
-    pcolor(X, Y, w_plot)
-    pause(.1)
- 
-end
+A3 = w_final;
+save A3.dat A3 -ascii
 
-hold on
+
+
+% for n = 1:length(t)
+%     w_plot = reshape(wsol(n,:), Nx, Ny); % reshaping back to the right size
+%     pcolor(X, Y, w_plot)
+%     pause(.1)
+%  
+% end
+
 %% HW 3 Part 3
 clc; clear all; close all;
 
@@ -110,14 +119,19 @@ w0_col = w0 - w_mean;
 
 KXY2D = KX.^2 + KY.^2;
 
-tol = 1e-6 ; options = odeset('RelTol',tol,'AbsTol',tol);
+tol = 10^(-6) ; options = odeset('RelTol',tol,'AbsTol',tol);
 [t, wsol] = ode45('rhs_ft', tspan , w0_col, options, n,KXY2D, v, A, B, C);
 
-for n = 1:length(t)
-    w_plot = reshape(wsol(n,:), Nx, Ny); % reshaping back to the right size
-    pcolor(X, Y, w_plot)
-    pause(.1)
- 
-end
+w_final = reshape(wsol(end,:)', Nx, Ny);
+A4 = w_final;
+save A4.dat A4 -ascii
+
+
+% for n = 1:length(t)
+%     w_plot = reshape(wsol(n,:), Nx, Ny); % reshaping back to the right size
+%     pcolor(X, Y, w_plot)
+%     pause(.1)
+%  
+% end
 
 
